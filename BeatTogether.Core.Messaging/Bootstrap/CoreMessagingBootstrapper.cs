@@ -8,19 +8,20 @@ namespace BeatTogether.Core.Messaging.Bootstrap
 {
     public static class CoreMessagingBootstrapper
     {
-        public static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services) =>
-            services
-                .AddTransient<RNGCryptoServiceProvider>()
-                .AddTransient(serviceProvider =>
-                    new AesCryptoServiceProvider()
-                    {
-                        Mode = CipherMode.CBC,
-                        Padding = PaddingMode.None
-                    }
-                )
-                .AddSingleton<IMessageReader, MessageReader>()
-                .AddSingleton<IMessageWriter, MessageWriter>()
-                .AddSingleton<IEncryptedMessageReader, EncryptedMessageReader>()
-                .AddSingleton<IEncryptedMessageWriter, EncryptedMessageWriter>();
+        public static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
+        {
+            services.AddTransient<RNGCryptoServiceProvider>();
+            services.AddTransient(serviceProvider =>
+                new AesCryptoServiceProvider()
+                {
+                    Mode = CipherMode.CBC,
+                    Padding = PaddingMode.None
+                }
+            );
+            services.AddSingleton<IMessageReader, MessageReader>();
+            services.AddSingleton<IMessageWriter, MessageWriter>();
+            services.AddSingleton<IEncryptedMessageReader, EncryptedMessageReader>();
+            services.AddSingleton<IEncryptedMessageWriter, EncryptedMessageWriter>();
+        }
     }
 }
