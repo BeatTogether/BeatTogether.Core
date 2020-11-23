@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatTogether.Core.Messaging", "BeatTogether.Core.Messaging\BeatTogether.Core.Messaging.csproj", "{E28CDCB2-AA4A-4D2D-8CCB-1F3B3D7A70BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatTogether.Core.Data", "BeatTogether.Core.Data\BeatTogether.Core.Data.csproj", "{9DFE2320-23B8-40DD-BE66-1660259740B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatTogether.Core.Data", "BeatTogether.Core.Data\BeatTogether.Core.Data.csproj", "{9DFE2320-23B8-40DD-BE66-1660259740B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatTogether.Core.Hosting", "BeatTogether.Core.Hosting\BeatTogether.Core.Hosting.csproj", "{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{9DFE2320-23B8-40DD-BE66-1660259740B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DFE2320-23B8-40DD-BE66-1660259740B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DFE2320-23B8-40DD-BE66-1660259740B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
