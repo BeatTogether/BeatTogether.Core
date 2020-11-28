@@ -19,6 +19,8 @@ jobs:
         with:
           dotnet-version: 5.0.100
           source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Pack
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Data/BeatTogether.Core.Data.csproj
