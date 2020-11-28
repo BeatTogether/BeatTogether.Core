@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Messages;
+using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
