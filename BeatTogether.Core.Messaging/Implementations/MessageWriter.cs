@@ -21,14 +21,13 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         /// <inheritdoc cref="IMessageWriter.WriteTo"/>
-        public void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte? packetProperty)
-            where T : class, IMessage
+        public void WriteTo(ref GrowingSpanBuffer buffer, IMessage message, byte? packetProperty)
         {
             var messageGroup = 0U;
             var messageId = 0U;
+            var messageType = message.GetType();
             try
             {
-                var messageType = message.GetType();
                 messageGroup = _messageRegistries
                     .First(kvp => kvp.Value.TryGetMessageId(messageType, out messageId))
                     .Key;
@@ -37,7 +36,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             {
                 throw new Exception(
                     "Failed to retrieve identifier for message of type " +
-                    $"'{typeof(T).Name}'."
+                    $"'{messageType.Name}'."
                 );
             }
 

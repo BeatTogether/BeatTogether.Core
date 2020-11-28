@@ -22,7 +22,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         /// <inheritdoc cref="IEncryptedMessageReader.ReadFrom"/>
-        public IEncryptedMessage ReadFrom(ref SpanBufferReader bufferReader, byte[] key, HMAC hmac)
+        public IEncryptedMessage ReadFrom(ref SpanBufferReader bufferReader, byte[] key, HMAC hmac, byte? packetProperty)
         {
             var sequenceId = bufferReader.ReadUInt32();
             var iv = bufferReader.ReadBytes(16).ToArray();
@@ -56,7 +56,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                 throw new Exception("Message hash does not match the computed hash.");
 
             bufferReader = new SpanBufferReader(decryptedBuffer);
-            if (_messageReader.ReadFrom(ref bufferReader) is not IEncryptedMessage message)
+            if (_messageReader.ReadFrom(ref bufferReader, packetProperty) is not IEncryptedMessage message)
                 throw new Exception(
                     "Successfully decrypted message but failed to cast to type " +
                     $"'{nameof(IEncryptedMessage)}'."

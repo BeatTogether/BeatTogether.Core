@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatTogether.Core.Data", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatTogether.Core.Hosting", "BeatTogether.Core.Hosting\BeatTogether.Core.Hosting.csproj", "{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatTogether.Core.Security", "BeatTogether.Core.Security\BeatTogether.Core.Security.csproj", "{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatTogether.Core.Security", "BeatTogether.Core.Security\BeatTogether.Core.Security.csproj", "{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Implementation", "1. Implementation", "{D796D7BB-2093-42E3-BE65-4C47B15BEEE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Dependencies", "2. Dependencies", "{68C43D6A-C8F7-4BE0-96DB-3B576B666C8E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreServer", "dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj", "{5C1D006F-2301-47A7-9C67-9CF16A888D8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +39,20 @@ Global
 		{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1D006F-2301-47A7-9C67-9CF16A888D8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1D006F-2301-47A7-9C67-9CF16A888D8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1D006F-2301-47A7-9C67-9CF16A888D8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1D006F-2301-47A7-9C67-9CF16A888D8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E28CDCB2-AA4A-4D2D-8CCB-1F3B3D7A70BE} = {D796D7BB-2093-42E3-BE65-4C47B15BEEE4}
+		{9DFE2320-23B8-40DD-BE66-1660259740B0} = {D796D7BB-2093-42E3-BE65-4C47B15BEEE4}
+		{C54E2DF3-9108-4D70-B4D8-8E29C1567DC9} = {D796D7BB-2093-42E3-BE65-4C47B15BEEE4}
+		{CBA6EFCD-ABBF-49AA-B9F7-4F3AAC4821CF} = {D796D7BB-2093-42E3-BE65-4C47B15BEEE4}
+		{5C1D006F-2301-47A7-9C67-9CF16A888D8B} = {68C43D6A-C8F7-4BE0-96DB-3B576B666C8E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D074D30D-60D5-4042-9867-E4E6F4EAB464}

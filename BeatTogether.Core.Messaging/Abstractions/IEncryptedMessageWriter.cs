@@ -14,7 +14,8 @@ namespace BeatTogether.Core.Messaging.Abstractions
         /// <param name="message">The message to serialize.</param>
         /// <param name="key">The encryption key.</param>
         /// <param name="hmac">HMAC hasher.</param>
-        void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac)
+        /// <param name="packetProperty">The LiteNetLib PacketProperty to write.</param>
+        void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty = null)
             where T : class, IMessage;
     }
 }

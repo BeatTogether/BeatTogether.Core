@@ -1,5 +1,7 @@
 ﻿using System.Security.Cryptography;
+using BeatTogether.Core.Hosting.Extensions;
 using BeatTogether.Core.Messaging.Abstractions;
+using BeatTogether.Core.Messaging.Configuration;
 using BeatTogether.Core.Messaging.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,6 +12,7 @@ namespace BeatTogether.Core.Messaging.Bootstrap
     {
         public static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
         {
+            services.AddConfiguration<MessagingConfiguration>(hostBuilderContext.Configuration, "Messaging");
             services.AddTransient<RNGCryptoServiceProvider>();
             services.AddTransient(serviceProvider =>
                 new AesCryptoServiceProvider()

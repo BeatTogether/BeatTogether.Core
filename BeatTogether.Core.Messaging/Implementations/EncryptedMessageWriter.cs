@@ -22,14 +22,14 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         /// <inheritdoc cref="IEncryptedMessageWriter.WriteTo"/>
-        public void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac)
+        public void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty)
             where T : class, IMessage
         {
             if (message is not IEncryptedMessage)
                 throw new Exception($"Message of type '{typeof(T).Name}' cannot be encrypted.");
 
             var unencryptedBuffer = new GrowingSpanBuffer(stackalloc byte[412]);
-            _messageWriter.WriteTo(ref unencryptedBuffer, message);
+            _messageWriter.WriteTo(ref unencryptedBuffer, message, packetProperty);
 
             var hashBuffer = new GrowingSpanBuffer(stackalloc byte[unencryptedBuffer.Size + 4]);
             hashBuffer.WriteBytes(unencryptedBuffer.Data);
