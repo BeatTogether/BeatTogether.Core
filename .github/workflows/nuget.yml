@@ -18,9 +18,7 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 5.0.100
-          source-url: https://nuget.pkg.github.com/pythonology/index.json
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}   
+          source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
       - name: Pack
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Data/BeatTogether.Core.Data.csproj
@@ -29,7 +27,7 @@ jobs:
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
       - name: Publish
         run: |
-          dotnet nuget push nupkgs/BeatTogether.Core.Data.*.nupkg
-          dotnet nuget push nupkgs/BeatTogether.Core.Hosting.*.nupkg
-          dotnet nuget push nupkgs/BeatTogether.Core.Messaging.*.nupkg
-          dotnet nuget push nupkgs/BeatTogether.Core.Security.*.nupkg
+          dotnet nuget push nupkgs/BeatTogether.Core.Data.*.nupkg -k ${{secrets.GITHUB_TOKEN}}
+          dotnet nuget push nupkgs/BeatTogether.Core.Hosting.*.nupkg -k ${{secrets.GITHUB_TOKEN}}
+          dotnet nuget push nupkgs/BeatTogether.Core.Messaging.*.nupkg -k ${{secrets.GITHUB_TOKEN}}
+          dotnet nuget push nupkgs/BeatTogether.Core.Security.*.nupkg -k ${{secrets.GITHUB_TOKEN}}
