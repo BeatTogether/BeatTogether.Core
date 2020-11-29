@@ -38,19 +38,15 @@ namespace BeatTogether.Core.Messaging.Implementations
             _messageSource.Subscribe(messageHandler);
 
         protected void Register<TRequest, TResponse>(MessageHandler<TRequest, TResponse> messageHandler)
-            where TRequest : class, IMessage
-            where TResponse : class, IMessage =>
+            where TRequest : class, IReliableRequest
+            where TResponse : class, IReliableResponse =>
             Register<TRequest>(async (session, request) =>
             {
                 var response = await messageHandler(session, request);
                 if (response == null)
                     return;
-                if (request is IReliableRequest reliableRequest &&
-                    response is IReliableResponse reliableResponse)
-                {
-                    if (reliableResponse.ResponseId == 0)
-                        reliableResponse.ResponseId = reliableRequest.RequestId;
-                }
+                if (response.ResponseId == 0)
+                    response.ResponseId = request.RequestId;
                 if (response is IReliableRequest)
                     await _messageDispatcher.SendWithRetry(session, (IReliableRequest)response);
                 else
@@ -83,8 +79,8 @@ namespace BeatTogether.Core.Messaging.Implementations
             });
 
         protected void Register<TRequest, TResponse>(ServiceMessageHandler<TService, TRequest, TResponse> messageHandler)
-            where TRequest : class, IMessage
-            where TResponse : class, IMessage =>
+            where TRequest : class, IReliableRequest
+            where TResponse : class, IReliableResponse =>
             Register<TRequest, TResponse>((session, request) =>
             {
                 using var scope = _serviceProvider.CreateScope();
