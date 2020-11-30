@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -9,13 +8,11 @@ using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    public abstract class BaseUdpServer<TSession> : NetCoreServer.UdpServer
-        where TSession : class, ISession, new()
+    public abstract class BaseUdpServer : NetCoreServer.UdpServer
     {
         private readonly IMessageSource _messageSource;
         private readonly IMessageDispatcher _messageDispatcher;
         private readonly ILogger _logger;
-        private readonly ConcurrentDictionary<EndPoint, ISession> _sessions;
 
         public BaseUdpServer(
             IPEndPoint endPoint,
@@ -25,8 +22,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         {
             _messageSource = messageSource;
             _messageDispatcher = messageDispatcher;
-            _logger = Log.ForContext<BaseUdpServer<TSession>>();
-            _sessions = new ConcurrentDictionary<EndPoint, ISession>();
+            _logger = Log.ForContext<BaseUdpServer>();
 
             _messageDispatcher.OnSend += (session, buffer) => SendAsync(session.EndPoint, buffer);
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
@@ -35,6 +31,12 @@ namespace BeatTogether.Core.Messaging.Implementations
                 return Task.CompletedTask;
             });
         }
+
+        #region Abstract Methods
+
+        protected abstract ISession GetSession(EndPoint endPoint);
+
+        #endregion
 
         #region Protected Methods
 
@@ -45,7 +47,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             _logger.Verbose($"Handling OnReceived (EndPoint='{endPoint}', Size={buffer.Length}).");
             if (buffer.Length > 0)
             {
-                var session = GetOrAddSession(endPoint);
+                var session = GetSession(endPoint);
                 _messageSource.Signal(session, buffer);
             }
             ReceiveAsync();
@@ -53,19 +55,6 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         protected override void OnError(SocketError error) =>
             _logger.Error($"Handling OnError (Error={error}).");
-
-        protected ISession GetOrAddSession(EndPoint endPoint) =>
-            _sessions.GetOrAdd(
-                endPoint,
-                key =>
-                {
-                    _logger.Verbose($"Opening session (EndPoint='{endPoint}').");
-                    return new TSession()
-                    {
-                        EndPoint = key
-                    };
-                }
-            );
 
         #endregion
     }

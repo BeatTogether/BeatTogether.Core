@@ -4,13 +4,11 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Messages;
-using Microsoft.Extensions.Hosting;
 using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    public abstract class BaseUdpClient<TSession> : NetCoreServer.UdpClient
-        where TSession : class, ISession, new()
+    public abstract class BaseUdpClient : NetCoreServer.UdpClient
     {
         public ISession Session { get; }
 
@@ -24,14 +22,11 @@ namespace BeatTogether.Core.Messaging.Implementations
             IMessageDispatcher messageDispatcher)
             : base(endPoint)
         {
-            Session = new TSession()
-            {
-                EndPoint = endPoint
-            };
+            Session = GetSession(endPoint);
 
             _messageSource = messageSource;
             _messageDispatcher = messageDispatcher;
-            _logger = Log.ForContext<BaseUdpClient<TSession>>();
+            _logger = Log.ForContext<BaseUdpClient>();
 
             // TODO: Remove byte array allocation
             _messageDispatcher.OnSend += (session, buffer) => SendAsync(session.EndPoint, buffer.ToArray());
@@ -41,6 +36,12 @@ namespace BeatTogether.Core.Messaging.Implementations
                 return Task.CompletedTask;
             });
         }
+
+        #region Abstract Methods
+
+        protected abstract ISession GetSession(EndPoint endPoint);
+
+        #endregion
 
         #region Protected Methods
 
