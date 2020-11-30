@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Delegates;
+using BeatTogether.Core.Messaging.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -35,7 +36,16 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         protected void Register<TMessage>(MessageHandler<TMessage> messageHandler)
             where TMessage : class, IMessage =>
-            _messageSource.Subscribe(messageHandler);
+            _messageSource.Subscribe<TMessage>((session, message) =>
+            {
+                if (message is IReliableRequest request)
+                    _messageDispatcher.Send(session, new AcknowledgeMessage()
+                    {
+                        ResponseId = request.RequestId,
+                        MessageHandled = true
+                    });
+                return messageHandler(session, message);
+            });
 
         protected void Register<TRequest, TResponse>(MessageHandler<TRequest, TResponse> messageHandler)
             where TRequest : class, IReliableRequest

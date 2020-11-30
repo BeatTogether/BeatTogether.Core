@@ -235,6 +235,16 @@ namespace BeatTogether.Core.Messaging.Implementations
                 var messageType = message.GetType();
                 try
                 {
+                    if (message is IReliableRequest request && !session.ShouldHandleRequest(request.RequestId))
+                    {
+                        _logger.Verbose(
+                            "Skipping duplicate request " +
+                            $"(MessageType='{messageType.Name}', " +
+                            $"RequestId={request.RequestId})."
+                        );
+                        return;
+                    }
+
                     if (message is MultipartMessage multipartMessage)
                     {
                         var multipartMessageWaiter = _multipartMessageWaiters.GetOrAdd(
@@ -246,7 +256,6 @@ namespace BeatTogether.Core.Messaging.Implementations
                             )
                         );
                         multipartMessageWaiter.AddMessage(session, multipartMessage);
-                        return;
                     }
 
                     if (message is IReliableResponse response && response is not AcknowledgeMessage)
