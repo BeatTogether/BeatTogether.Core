@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeatTogether.Core.Hosting\BeatTogether.Core.Hosting.csproj" />
-    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj" />
+    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
