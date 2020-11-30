@@ -4,8 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Authors>pythonology</Authors>
-    <Version>1.1.1</Version>
+    <Version>1.1.2</Version>
     <RepositoryUrl>https://github.com/pythonology/BeatTogether.Core</RepositoryUrl>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +16,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BeatTogether.Core.Hosting\BeatTogether.Core.Hosting.csproj" />
-    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <IncludeAssets>NetCoreServer.dll</IncludeAssets>
+    </ProjectReference>
   </ItemGroup>
+
+  <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>
