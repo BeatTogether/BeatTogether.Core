@@ -30,7 +30,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
         }
 
-        public event MessageDispatchHandler OnSend;
+        public event MessageDispatchHandler OnSent;
 
         protected abstract byte PacketProperty { get; }
 
@@ -62,7 +62,14 @@ namespace BeatTogether.Core.Messaging.Implementations
         public void Acknowledge(uint requestId, bool messageHandled)
         {
             if (_acknowledgementWaiters.TryRemove(requestId, out var acknowledgementWaiter))
+            {
+                _logger.Verbose(
+                    "Received acknowledgement for request " +
+                    $"(RequestId={requestId}, " +
+                    $"MessageHandled={messageHandled})."
+                );
                 acknowledgementWaiter.Complete(messageHandled);
+            }
         }
 
         public async Task SendWithRetry(ISession session, IReliableRequest request)
@@ -131,7 +138,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
             else
                 _messageWriter.WriteTo(ref buffer, message, PacketProperty);
-            OnSend?.Invoke(session, buffer.Data);
+            OnSent?.Invoke(session, buffer.Data);
         }
 
         #endregion

@@ -29,7 +29,16 @@ namespace BeatTogether.Core.Messaging.Implementations
             _logger = Log.ForContext<BaseUdpClient>();
 
             // TODO: Remove byte array allocation
-            _messageDispatcher.OnSend += (session, buffer) => SendAsync(session.EndPoint, buffer.ToArray());
+            _messageDispatcher.OnSent += (session, buffer) =>
+            {
+                var data = buffer.ToArray();
+                _logger.Verbose(
+                    "Handling OnSent " +
+                    $"(EndPoint='{session.EndPoint}', " +
+                    $"Data='{BitConverter.ToString(data)}')."
+                );
+                SendAsync(session.EndPoint, data);
+            };
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
             {
                 _messageDispatcher.Acknowledge(message.ResponseId, message.MessageHandled);

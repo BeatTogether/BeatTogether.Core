@@ -24,7 +24,15 @@ namespace BeatTogether.Core.Messaging.Implementations
             _messageDispatcher = messageDispatcher;
             _logger = Log.ForContext<BaseUdpServer>();
 
-            _messageDispatcher.OnSend += (session, buffer) => SendAsync(session.EndPoint, buffer);
+            _messageDispatcher.OnSent += (session, buffer) =>
+            {
+                _logger.Verbose(
+                    "Handling OnSent " +
+                    $"(EndPoint='{session.EndPoint}', " +
+                    $"Data='{BitConverter.ToString(buffer.ToArray())}')."
+                );
+                SendAsync(session.EndPoint, buffer);
+            };
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
             {
                 _messageDispatcher.Acknowledge(message.ResponseId, message.MessageHandled);

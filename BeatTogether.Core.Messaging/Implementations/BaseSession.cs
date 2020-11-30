@@ -14,8 +14,9 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         private uint _lastSentSequenceId = 0;
         private uint _lastSentRequestId = 0;
+        private object _handledRequestsLock = new object();
         private HashSet<uint> _handledRequests = new HashSet<uint>();
-        private uint _lastHandledRequestId = 0;
+        private HashSet<uint> _cachedHandledRequests = new HashSet<uint>();
 
         public uint GetNextSequenceId()
             => unchecked(Interlocked.Increment(ref _lastSentSequenceId));
@@ -25,16 +26,18 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         public bool ShouldHandleRequest(uint requestId)
         {
-            lock (_handledRequests)
+            lock (_handledRequestsLock)
             {
-                if (_handledRequests.Add(requestId))
+                if (_cachedHandledRequests.Contains(requestId))
+                    return false;
+                if (!_handledRequests.Add(requestId))
+                    return false;
+                if (_handledRequests.Count >= 32)
                 {
-                    if (_handledRequests.Count > 64)
-                        _handledRequests.Remove(_lastHandledRequestId);
-                    _lastHandledRequestId = requestId;
-                    return true;
+                    _cachedHandledRequests = _handledRequests;
+                    _handledRequests = new HashSet<uint>();
                 }
-                return false;
+                return true;
             }
         }
     }
