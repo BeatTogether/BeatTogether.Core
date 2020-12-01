@@ -126,18 +126,26 @@ namespace BeatTogether.Core.Messaging.Implementations
                         );
                         return;
                     }
+
+                    buffer.WriteBool(false);  // IsEncrypted
                     _messageWriter.WriteTo(ref buffer, message, PacketProperty);
                 }
                 else
+                {
+                    buffer.WriteBool(true);  // IsEncrypted
                     _encryptedMessageWriter.WriteTo(
                         ref buffer, message,
                         session.EncryptionParameters.SendKey,
                         session.EncryptionParameters.SendMac,
                         PacketProperty
                     );
+                }
             }
             else
+            {
+                buffer.WriteBool(false);  // IsEncrypted
                 _messageWriter.WriteTo(ref buffer, message, PacketProperty);
+            }
             OnSent?.Invoke(session, buffer.Data);
         }
 
