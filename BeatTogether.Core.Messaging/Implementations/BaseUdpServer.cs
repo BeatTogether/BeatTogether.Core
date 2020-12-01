@@ -38,6 +38,15 @@ namespace BeatTogether.Core.Messaging.Implementations
                 _messageDispatcher.Acknowledge(message.ResponseId, message.MessageHandled);
                 return Task.CompletedTask;
             });
+            _messageSource.Subscribe<MultipartMessage>((session, message) =>
+            {
+                _messageDispatcher.Send(session, new AcknowledgeMessage()
+                {
+                    ResponseId = message.RequestId,
+                    MessageHandled = true
+                });
+                return Task.CompletedTask;
+            });
         }
 
         #region Abstract Methods

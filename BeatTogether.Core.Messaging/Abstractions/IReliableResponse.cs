@@ -1,7 +1,6 @@
 ﻿namespace BeatTogether.Core.Messaging.Abstractions
 {
-    public interface IReliableResponse : IMessage
+    public interface IReliableResponse : IResponse
     {
-        uint ResponseId { get; set; }
     }
 }

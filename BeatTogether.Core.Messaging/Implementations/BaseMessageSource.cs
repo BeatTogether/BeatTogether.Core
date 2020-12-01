@@ -98,20 +98,20 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
         }
 
-        private class ReliableResponseWaiter
+        private class ResponseWaiter
         {
             private readonly BaseMessageSource _messageSource;
 
-            private TaskCompletionSource<IReliableResponse> _taskCompletionSource;
+            private TaskCompletionSource<IResponse> _taskCompletionSource;
             private CancellationTokenSource _cancellationTokenSource;
 
-            public ReliableResponseWaiter(
+            public ResponseWaiter(
                 uint requestId,
                 BaseMessageSource messageSource)
             {
                 _messageSource = messageSource;
 
-                _taskCompletionSource = new TaskCompletionSource<IReliableResponse>();
+                _taskCompletionSource = new TaskCompletionSource<IResponse>();
                 if (_messageSource._configuration.RequestTimeout > 0)
                 {
                     _cancellationTokenSource = new CancellationTokenSource();
@@ -132,9 +132,9 @@ namespace BeatTogether.Core.Messaging.Implementations
                 }
             }
 
-            public Task<IReliableResponse> Wait() => _taskCompletionSource.Task;
+            public Task<IResponse> Wait() => _taskCompletionSource.Task;
 
-            public void Complete(IReliableResponse message)
+            public void Complete(IResponse message)
             {
                 if (_taskCompletionSource != null)
                     _taskCompletionSource.TrySetResult(message);
@@ -154,7 +154,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         private readonly IEncryptedMessageReader _encryptedMessageReader;
         private readonly ILogger _logger;
         private readonly ConcurrentDictionary<uint, MultipartMessageWaiter> _multipartMessageWaiters;
-        private readonly ConcurrentDictionary<uint, ReliableResponseWaiter> _responseWaiters;
+        private readonly ConcurrentDictionary<uint, ResponseWaiter> _responseWaiters;
         private readonly Dictionary<Type, List<MessageHandler>> _messageHandlers;
 
         public BaseMessageSource(
@@ -167,7 +167,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             _encryptedMessageReader = encryptedMessageReader;
             _logger = Log.ForContext<BaseMessageSource>();
             _multipartMessageWaiters = new ConcurrentDictionary<uint, MultipartMessageWaiter>();
-            _responseWaiters = new ConcurrentDictionary<uint, ReliableResponseWaiter>();
+            _responseWaiters = new ConcurrentDictionary<uint, ResponseWaiter>();
             _messageHandlers = new Dictionary<Type, List<MessageHandler>>();
         }
 
@@ -183,11 +183,11 @@ namespace BeatTogether.Core.Messaging.Implementations
             messageHandlers.Add((endPoint, message) => messageHandler(endPoint, (TMessage)message));
         }
 
-        public Task<IReliableResponse> WaitForResponse(uint requestId)
+        public Task<IResponse> WaitForResponse(uint requestId)
         {
             if (!_responseWaiters.TryGetValue(requestId, out var responseWaiter))
             {
-                responseWaiter = new ReliableResponseWaiter(requestId, this);
+                responseWaiter = new ResponseWaiter(requestId, this);
                 _responseWaiters[requestId] = responseWaiter;
             }
             return responseWaiter.Wait();
@@ -235,7 +235,8 @@ namespace BeatTogether.Core.Messaging.Implementations
                 var messageType = message.GetType();
                 try
                 {
-                    if (message is IReliableRequest request && !session.ShouldHandleRequest(request.RequestId))
+                    if (message is IReliableRequest request &&
+                        !session.ShouldHandleRequest(request.RequestId))
                     {
                         _logger.Verbose(
                             "Skipping duplicate request " +
@@ -258,7 +259,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                         multipartMessageWaiter.AddMessage(session, multipartMessage);
                     }
 
-                    if (message is IReliableResponse response && response is not AcknowledgeMessage)
+                    if (message is IResponse response && response is not AcknowledgeMessage)
                     {
                         if (_responseWaiters.TryRemove(response.ResponseId, out var responseWaiter))
                             responseWaiter.Complete(response);

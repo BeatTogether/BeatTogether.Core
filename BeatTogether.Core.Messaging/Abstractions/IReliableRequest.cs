@@ -1,7 +1,6 @@
 ﻿namespace BeatTogether.Core.Messaging.Abstractions
 {
-    public interface IReliableRequest : IMessage
+    public interface IReliableRequest : IRequest
     {
-        uint RequestId { get; set; }
     }
 }

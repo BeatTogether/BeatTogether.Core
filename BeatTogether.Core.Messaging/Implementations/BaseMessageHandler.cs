@@ -48,8 +48,8 @@ namespace BeatTogether.Core.Messaging.Implementations
             });
 
         protected void Register<TRequest, TResponse>(MessageHandler<TRequest, TResponse> messageHandler)
-            where TRequest : class, IReliableRequest
-            where TResponse : class, IReliableResponse =>
+            where TRequest : class, IRequest
+            where TResponse : class, IResponse =>
             Register<TRequest>(async (session, request) =>
             {
                 var response = await messageHandler(session, request);
@@ -89,8 +89,8 @@ namespace BeatTogether.Core.Messaging.Implementations
             });
 
         protected void Register<TRequest, TResponse>(ServiceMessageHandler<TService, TRequest, TResponse> messageHandler)
-            where TRequest : class, IReliableRequest
-            where TResponse : class, IReliableResponse =>
+            where TRequest : class, IRequest
+            where TResponse : class, IResponse =>
             Register<TRequest, TResponse>((session, request) =>
             {
                 using var scope = _serviceProvider.CreateScope();

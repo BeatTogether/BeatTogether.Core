@@ -98,7 +98,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         public async Task<TResponse> SendWithRetry<TResponse>(ISession session, IReliableRequest request)
-            where TResponse : class, IReliableResponse
+            where TResponse : class, IResponse
         {
             if (request.RequestId == 0)
                 request.RequestId = request.RequestId = session.GetNextRequestId();

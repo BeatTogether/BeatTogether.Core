@@ -8,7 +8,7 @@ namespace BeatTogether.Core.Messaging.Abstractions
     {
         void Subscribe<TMessage>(MessageHandler<TMessage> messageHandler)
             where TMessage : class, IMessage;
-        Task<IReliableResponse> WaitForResponse(uint requestId);
+        Task<IResponse> WaitForResponse(uint requestId);
         void Signal(ISession session, ReadOnlySpan<byte> buffer);
         void Signal(ISession session, IMessage message);
     }
