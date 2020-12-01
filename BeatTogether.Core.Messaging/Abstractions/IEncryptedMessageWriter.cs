@@ -16,6 +16,6 @@ namespace BeatTogether.Core.Messaging.Abstractions
         /// <param name="hmac">HMAC hasher.</param>
         /// <param name="packetProperty">The LiteNetLib PacketProperty to write.</param>
         void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty = null)
-            where T : class, IMessage;
+            where T : class, IEncryptedMessage;
     }
 }

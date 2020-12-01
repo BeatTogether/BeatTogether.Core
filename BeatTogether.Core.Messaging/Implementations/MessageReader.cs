@@ -44,10 +44,10 @@ namespace BeatTogether.Core.Messaging.Implementations
             var messageId = bufferReader.ReadVarUInt();
             if (!messageRegistry.TryCreateMessage(messageId, out var message))
                 throw new InvalidDataContractException($"Invalid message identifier (MessageId={messageId}).");
-            if (message is IReliableRequest)
-                ((IReliableRequest)message).RequestId = bufferReader.ReadUInt32();
-            if (message is IReliableResponse)
-                ((IReliableResponse)message).ResponseId = bufferReader.ReadUInt32();
+            if (message is IRequest request)
+                request.RequestId = bufferReader.ReadUInt32();
+            if (message is IResponse response)
+                response.ResponseId = bufferReader.ReadUInt32();
             message.ReadFrom(ref bufferReader);
             return message;
         }

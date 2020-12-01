@@ -38,10 +38,10 @@ namespace BeatTogether.Core.Messaging.Implementations
             where TMessage : class, IMessage =>
             _messageSource.Subscribe<TMessage>((session, message) =>
             {
-                if (message is IReliableRequest request)
+                if (message is IReliableRequest reliableRequest)
                     _messageDispatcher.Send(session, new AcknowledgeMessage()
                     {
-                        ResponseId = request.RequestId,
+                        ResponseId = reliableRequest.RequestId,
                         MessageHandled = true
                     });
                 return messageHandler(session, message);
@@ -57,8 +57,8 @@ namespace BeatTogether.Core.Messaging.Implementations
                     return;
                 if (response.ResponseId == 0)
                     response.ResponseId = request.RequestId;
-                if (response is IReliableRequest)
-                    await _messageDispatcher.SendWithRetry(session, (IReliableRequest)response);
+                if (response is IReliableRequest reliableRequest)
+                    await _messageDispatcher.SendWithRetry(session, reliableRequest);
                 else
                     _messageDispatcher.Send(session, response);
             });

@@ -235,7 +235,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                 var messageType = message.GetType();
                 try
                 {
-                    if (message is IReliableRequest request &&
+                    if (message is IRequest request &&
                         !session.ShouldHandleRequest(request.RequestId))
                     {
                         _logger.Verbose(

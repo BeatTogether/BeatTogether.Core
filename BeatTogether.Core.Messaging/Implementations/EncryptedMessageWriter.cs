@@ -23,17 +23,14 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         /// <inheritdoc cref="IEncryptedMessageWriter.WriteTo"/>
         public void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty)
-            where T : class, IMessage
+            where T : class, IEncryptedMessage
         {
-            if (message is not IEncryptedMessage)
-                throw new Exception($"Message of type '{typeof(T).Name}' cannot be encrypted.");
-
             var unencryptedBuffer = new GrowingSpanBuffer(stackalloc byte[412]);
             _messageWriter.WriteTo(ref unencryptedBuffer, message, packetProperty);
 
             var hashBuffer = new GrowingSpanBuffer(stackalloc byte[unencryptedBuffer.Size + 4]);
             hashBuffer.WriteBytes(unencryptedBuffer.Data);
-            hashBuffer.WriteUInt32(((IEncryptedMessage)message).SequenceId);
+            hashBuffer.WriteUInt32(message.SequenceId);
             Span<byte> hash = stackalloc byte[32];
             if (!hmac.TryComputeHash(hashBuffer.Data, hash, out _))
                 throw new Exception("Failed to compute message hash.");
@@ -62,7 +59,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                 }
             }
 
-            buffer.WriteUInt32(((IEncryptedMessage)message).SequenceId);
+            buffer.WriteUInt32(message.SequenceId);
             buffer.WriteBytes(iv);
             buffer.WriteBytes(encryptedBuffer);
         }

@@ -113,7 +113,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         public void Send(ISession session, IMessage message)
         {
             var buffer = new GrowingSpanBuffer(stackalloc byte[412]);
-            if (message is IEncryptedMessage)
+            if (message is IEncryptedMessage encryptedMessage)
             {
                 if (session.EncryptionParameters is null)
                 {
@@ -134,7 +134,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                 {
                     buffer.WriteBool(true);  // IsEncrypted
                     _encryptedMessageWriter.WriteTo(
-                        ref buffer, message,
+                        ref buffer, encryptedMessage,
                         session.EncryptionParameters.SendKey,
                         session.EncryptionParameters.SendMac,
                         PacketProperty
