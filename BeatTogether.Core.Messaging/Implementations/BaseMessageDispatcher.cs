@@ -112,6 +112,12 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         public void Send(ISession session, IMessage message)
         {
+            if (message is IRequest request)
+            {
+                if (request.RequestId == 0)
+                    request.RequestId = request.RequestId = session.GetNextRequestId();
+            }
+
             var buffer = new GrowingSpanBuffer(stackalloc byte[412]);
             if (message is IEncryptedMessage encryptedMessage)
             {
@@ -132,6 +138,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                 }
                 else
                 {
+                    encryptedMessage.SequenceId = session.GetNextSequenceId();
                     buffer.WriteBool(true);  // IsEncrypted
                     _encryptedMessageWriter.WriteTo(
                         ref buffer, encryptedMessage,

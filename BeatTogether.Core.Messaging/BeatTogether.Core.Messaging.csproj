@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Authors>pythonology</Authors>
-    <Version>1.2.4</Version>
+    <Version>1.4.0</Version>
     <RepositoryUrl>https://github.com/pythonology/BeatTogether.Core</RepositoryUrl>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
