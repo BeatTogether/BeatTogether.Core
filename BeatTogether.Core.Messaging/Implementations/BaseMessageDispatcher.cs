@@ -35,6 +35,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         protected abstract byte PacketProperty { get; }
 
         private readonly MessagingConfiguration _configuration;
+        private readonly IMessageSource _messageSource;
         private readonly IMessageWriter _messageWriter;
         private readonly IEncryptedMessageWriter _encryptedMessageWriter;
         private readonly ILogger _logger;
@@ -43,10 +44,12 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         public BaseMessageDispatcher(
             MessagingConfiguration configuration,
+            IMessageSource messageSource,
             IMessageWriter messageWriter,
             IEncryptedMessageWriter encryptedMessageWriter)
         {
             _configuration = configuration;
+            _messageSource = messageSource;
             _messageWriter = messageWriter;
             _encryptedMessageWriter = encryptedMessageWriter;
             _logger = Log.ForContext<BaseMessageDispatcher>();
@@ -92,6 +95,19 @@ namespace BeatTogether.Core.Messaging.Implementations
                     $"RetryCount={retryCount})."
                 );
             }
+        }
+
+        public async Task<TResponse> SendWithRetry<TResponse>(ISession session, IReliableRequest request)
+            where TResponse : class, IResponse
+        {
+            if (request.RequestId == 0)
+                request.RequestId = request.RequestId = session.GetNextRequestId();
+
+            var responseWaiter = _messageSource.WaitForResponse(request.RequestId);
+            await Task.WhenAny(SendWithRetry(session, request), responseWaiter);
+            var response = (TResponse)await responseWaiter;
+            Acknowledge(request.RequestId, true);
+            return response;
         }
 
         public void Send(ISession session, IMessage message)

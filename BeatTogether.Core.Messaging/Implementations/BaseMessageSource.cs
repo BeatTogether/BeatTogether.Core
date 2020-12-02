@@ -75,11 +75,6 @@ namespace BeatTogether.Core.Messaging.Implementations
                     _cancellationTokenSource = null;
                 }
 
-                _messageSource._messageDispatcher.Send(session, new AcknowledgeMessage()
-                {
-                    ResponseId = _multipartMessageId,
-                    MessageHandled = true
-                });
                 _messageSource.Signal(session, message);
             }
 
@@ -155,7 +150,6 @@ namespace BeatTogether.Core.Messaging.Implementations
         protected abstract byte PacketProperty { get; }
 
         private readonly MessagingConfiguration _configuration;
-        private readonly IMessageDispatcher _messageDispatcher;
         private readonly IMessageReader _messageReader;
         private readonly IEncryptedMessageReader _encryptedMessageReader;
         private readonly ILogger _logger;
@@ -165,12 +159,10 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         public BaseMessageSource(
             MessagingConfiguration configuration,
-            IMessageDispatcher messageDispatcher,
             IMessageReader messageReader,
             IEncryptedMessageReader encryptedMessageReader)
         {
             _configuration = configuration;
-            _messageDispatcher = messageDispatcher;
             _messageReader = messageReader;
             _encryptedMessageReader = encryptedMessageReader;
             _logger = Log.ForContext<BaseMessageSource>();
@@ -243,13 +235,6 @@ namespace BeatTogether.Core.Messaging.Implementations
                 var messageType = message.GetType();
                 try
                 {
-                    if (message is IReliableRequest reliableRequest)
-                        _messageDispatcher.Send(session, new AcknowledgeMessage()
-                        {
-                            ResponseId = reliableRequest.RequestId,
-                            MessageHandled = true
-                        });
-
                     if (message is IRequest request &&
                         !session.ShouldHandleRequest(request.RequestId))
                     {
@@ -272,7 +257,6 @@ namespace BeatTogether.Core.Messaging.Implementations
                             )
                         );
                         multipartMessageWaiter.AddMessage(session, multipartMessage);
-                        return;
                     }
 
                     if (message is IResponse response && response is not AcknowledgeMessage)
