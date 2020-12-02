@@ -8,8 +8,6 @@ namespace BeatTogether.Core.Messaging.Abstractions
         event MessageDispatchHandler OnSent;
         void Acknowledge(uint requestId, bool messageHandled);
         Task SendWithRetry(ISession session, IReliableRequest request);
-        Task<TResponse> SendWithRetry<TResponse>(ISession session, IReliableRequest request)
-            where TResponse : class, IResponse;
         void Send(ISession session, IMessage message);
     }
 }
