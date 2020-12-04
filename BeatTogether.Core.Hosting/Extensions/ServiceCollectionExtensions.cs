@@ -8,7 +8,15 @@ namespace BeatTogether.Core.Hosting.Extensions
         public static IServiceCollection AddConfiguration<T>(
             this IServiceCollection services,
             IConfiguration configuration,
-            string sectionKey) where T : class =>
-            services.AddSingleton(configuration.GetSection(sectionKey).Get<T>());
+            string sectionKey = default)
+            where T : class, new()
+        {
+            if (!string.IsNullOrEmpty(sectionKey))
+                configuration = configuration.GetSection(sectionKey);
+            var instance = configuration.Get<T>();
+            if (instance is null)
+                instance = new T();
+            return services.AddSingleton(instance);
+        }
     }
 }
