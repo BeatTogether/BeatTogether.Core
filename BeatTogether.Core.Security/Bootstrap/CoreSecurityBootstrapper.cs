@@ -5,6 +5,7 @@ using BeatTogether.Core.Security.Configuration;
 using BeatTogether.Core.Security.Implementations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Org.BouncyCastle.Security;
 
 namespace BeatTogether.Core.Security.Bootstrap
 {
@@ -18,6 +19,7 @@ namespace BeatTogether.Core.Security.Bootstrap
                 var configuration = serviceProvider.GetRequiredService<SecurityConfiguration>();
                 return new X509Certificate2(configuration.CertificatePath);
             });
+            services.AddTransient<SecureRandom>();
             services.AddSingleton<IDiffieHellmanService, DiffieHellmanService>();
             services.AddSingleton<ICertificateSigningService, CertificateSigningService>();
         }
