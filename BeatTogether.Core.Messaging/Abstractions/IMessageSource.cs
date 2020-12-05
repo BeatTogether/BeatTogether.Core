@@ -6,6 +6,7 @@ namespace BeatTogether.Core.Messaging.Abstractions
 {
     public interface IMessageSource
     {
+        void Subscribe(MessageHandler messageHandler);
         void Subscribe<TMessage>(MessageHandler<TMessage> messageHandler)
             where TMessage : class, IMessage;
         Task<IResponse> WaitForResponse(uint requestId);

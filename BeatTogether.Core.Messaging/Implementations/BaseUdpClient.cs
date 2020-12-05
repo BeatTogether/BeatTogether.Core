@@ -44,13 +44,14 @@ namespace BeatTogether.Core.Messaging.Implementations
                 _messageDispatcher.Acknowledge(message.ResponseId, message.MessageHandled);
                 return Task.CompletedTask;
             });
-            _messageSource.Subscribe<MultipartMessage>((session, message) =>
+            _messageSource.Subscribe((session, message) =>
             {
-                _messageDispatcher.Send(session, new AcknowledgeMessage()
-                {
-                    ResponseId = message.RequestId,
-                    MessageHandled = true
-                });
+                if (message is IReliableRequest reliableRequest)
+                    _messageDispatcher.Send(session, new AcknowledgeMessage()
+                    {
+                        ResponseId = reliableRequest.RequestId,
+                        MessageHandled = true
+                    });
                 return Task.CompletedTask;
             });
         }

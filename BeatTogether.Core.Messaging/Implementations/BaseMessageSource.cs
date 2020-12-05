@@ -155,7 +155,8 @@ namespace BeatTogether.Core.Messaging.Implementations
         private readonly ILogger _logger;
         private readonly ConcurrentDictionary<uint, MultipartMessageWaiter> _multipartMessageWaiters;
         private readonly ConcurrentDictionary<uint, ResponseWaiter> _responseWaiters;
-        private readonly Dictionary<Type, List<MessageHandler>> _messageHandlers;
+        private readonly List<MessageHandler> _messageHandlers;
+        private readonly Dictionary<Type, List<MessageHandler>> _genericMessageHandlers;
 
         public BaseMessageSource(
             MessagingConfiguration configuration,
@@ -168,17 +169,21 @@ namespace BeatTogether.Core.Messaging.Implementations
             _logger = Log.ForContext<BaseMessageSource>();
             _multipartMessageWaiters = new ConcurrentDictionary<uint, MultipartMessageWaiter>();
             _responseWaiters = new ConcurrentDictionary<uint, ResponseWaiter>();
-            _messageHandlers = new Dictionary<Type, List<MessageHandler>>();
+            _messageHandlers = new List<MessageHandler>();
+            _genericMessageHandlers = new Dictionary<Type, List<MessageHandler>>();
         }
+
+        public void Subscribe(MessageHandler messageHandler) =>
+            _messageHandlers.Add(messageHandler);
 
         public void Subscribe<TMessage>(MessageHandler<TMessage> messageHandler)
             where TMessage : class, IMessage
         {
             var messageType = typeof(TMessage);
-            if (!_messageHandlers.TryGetValue(messageType, out var messageHandlers))
+            if (!_genericMessageHandlers.TryGetValue(messageType, out var messageHandlers))
             {
                 messageHandlers = new List<MessageHandler>();
-                _messageHandlers[messageType] = messageHandlers;
+                _genericMessageHandlers[messageType] = messageHandlers;
             }
             messageHandlers.Add((endPoint, message) => messageHandler(endPoint, (TMessage)message));
         }
@@ -265,8 +270,10 @@ namespace BeatTogether.Core.Messaging.Implementations
                             responseWaiter.Complete(response);
                     }
 
-                    if (_messageHandlers.TryGetValue(messageType, out var messageHandlers))
-                        await Task.WhenAll(messageHandlers.Select(messageHandler => messageHandler(session, message)));
+                    var messageHandlerTasks = _messageHandlers.Select(messageHandler => messageHandler(session, message));
+                    if (_genericMessageHandlers.TryGetValue(messageType, out var messageHandlers))
+                        messageHandlerTasks = messageHandlers.Select(messageHandler => messageHandler(session, message));
+                    await Task.WhenAll(messageHandlerTasks);
                 }
                 catch (Exception e)
                 {
