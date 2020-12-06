@@ -272,7 +272,9 @@ namespace BeatTogether.Core.Messaging.Implementations
 
                     var messageHandlerTasks = _messageHandlers.Select(messageHandler => messageHandler(session, message));
                     if (_genericMessageHandlers.TryGetValue(messageType, out var messageHandlers))
-                        messageHandlerTasks = messageHandlers.Select(messageHandler => messageHandler(session, message));
+                        messageHandlerTasks = messageHandlerTasks.Concat(
+                            messageHandlers.Select(messageHandler => messageHandler(session, message))
+                        );
                     await Task.WhenAll(messageHandlerTasks);
                 }
                 catch (Exception e)
