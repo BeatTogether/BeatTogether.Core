@@ -62,7 +62,11 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         protected override void OnReceived(EndPoint endPoint, ReadOnlySpan<byte> buffer)
         {
-            _logger.Verbose($"Handling OnReceived (EndPoint='{endPoint}', Size={buffer.Length}).");
+            _logger.Verbose(
+                "Handling OnReceived " +
+                $"(EndPoint='{endPoint}', " +
+                $"Data='{BitConverter.ToString(buffer.ToArray())}')."
+            );
             if (buffer.Length > 0)
             {
                 var session = GetSession(endPoint);
