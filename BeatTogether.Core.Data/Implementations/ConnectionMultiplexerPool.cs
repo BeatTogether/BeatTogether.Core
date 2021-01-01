@@ -202,8 +202,8 @@ namespace BeatTogether.Core.Data.Implementations
             var connectionMultiplexerConfiguration = new ConfigurationOptions()
             {
                 AbortOnConnectFail = false,
-                SyncTimeout = 50000,
-                KeepAlive = 60
+                SyncTimeout = configuration.SyncTimeout,
+                KeepAlive = configuration.KeepAlive
             };
             connectionMultiplexerConfiguration.EndPoints.Add(_configuration.Endpoint);
             while (_connections.Count < _configuration.ConnectionPoolSize)
