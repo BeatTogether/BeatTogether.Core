@@ -13,6 +13,7 @@ namespace BeatTogether.Core.Messaging.Bootstrap
         public static void ConfigureServices(HostBuilderContext hostBuilderContext, IServiceCollection services)
         {
             services.AddConfiguration<MessagingConfiguration>(hostBuilderContext.Configuration, "Messaging");
+            services.AddConfiguration<RabbitMQConfiguration>(hostBuilderContext.Configuration, "Messaging:RabbitMQ");
             services.AddTransient<RNGCryptoServiceProvider>();
             services.AddTransient(serviceProvider =>
                 new AesCryptoServiceProvider()
