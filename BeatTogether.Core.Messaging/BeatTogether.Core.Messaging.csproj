@@ -4,7 +4,7 @@
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
     <Authors>pythonology</Authors>
-    <Version>1.6.1</Version>
+    <Version>1.6.2</Version>
     <RepositoryUrl>https://github.com/pythonology/BeatTogether.Core</RepositoryUrl>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="Krypton.Buffers" Version="1.1.0" />
     <PackageReference Include="Obvs" Version="5.0.2.52" />
+    <PackageReference Include="Obvs.RabbitMQ" Version="5.0.2.15" />
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
@@ -20,6 +21,10 @@
     <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj">
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
       <IncludeAssets>NetCoreServer.dll</IncludeAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\dependencies\Obvs.Serialization\Obvs.Serialization.Json\Obvs.Serialization.Json.csproj">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <IncludeAssets>Obvs.Serialization.Json.dll</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
 
