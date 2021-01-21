@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using BeatTogether.Core.Messaging.Abstractions;
-using BeatTogether.Core.Messaging.Extensions;
+using BeatTogether.Extensions;
 using Krypton.Buffers;
 
 namespace BeatTogether.Core.Messaging.Messages
@@ -13,18 +13,18 @@ namespace BeatTogether.Core.Messaging.Messages
         public uint Offset { get; set; }
         public uint Length { get; set; }
         public uint TotalLength { get; set; }
-        public byte[] Data { get; set; }
+        public byte[] Data { get; set; } = null!;
 
         private const uint _maximumLength = 384;
         private const uint _maximumTotalLength = 0x7FFF;
 
-        public void WriteTo(ref GrowingSpanBuffer buffer)
+        public void WriteTo(ref SpanBufferWriter bufferWriter)
         {
-            buffer.WriteUInt32(MultipartMessageId);
-            buffer.WriteVarUInt(Offset);
-            buffer.WriteVarUInt(Length);
-            buffer.WriteVarUInt(TotalLength);
-            buffer.WriteBytes(Data);
+            bufferWriter.WriteUInt32(MultipartMessageId);
+            bufferWriter.WriteVarUInt(Offset);
+            bufferWriter.WriteVarUInt(Length);
+            bufferWriter.WriteVarUInt(TotalLength);
+            bufferWriter.WriteBytes(Data);
         }
 
         public void ReadFrom(ref SpanBufferReader bufferReader)

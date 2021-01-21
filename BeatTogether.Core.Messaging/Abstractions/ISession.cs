@@ -5,9 +5,9 @@ namespace BeatTogether.Core.Messaging.Abstractions
 {
     public interface ISession
     {
-        EndPoint EndPoint { get; init; }
+        EndPoint EndPoint { get; }
         uint Epoch { get; set; }
-        EncryptionParameters EncryptionParameters { get; set; }
+        EncryptionParameters? EncryptionParameters { get; set; }
 
         uint GetNextSequenceId();
         uint GetNextRequestId();

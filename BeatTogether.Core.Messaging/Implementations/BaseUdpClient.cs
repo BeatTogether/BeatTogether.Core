@@ -8,7 +8,9 @@ using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    public abstract class BaseUdpClient : NetCoreServer.UdpClient
+    using UdpClient = NetCoreServer.UdpClient;
+
+    public abstract class BaseUdpClient : UdpClient
     {
         public ISession Session { get; }
 

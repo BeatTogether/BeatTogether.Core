@@ -21,7 +21,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             private readonly ConcurrentDictionary<uint, MultipartMessage> _messages;
 
             private TaskCompletionSource<IMessage> _taskCompletionSource;
-            private CancellationTokenSource _cancellationTokenSource;
+            private CancellationTokenSource? _cancellationTokenSource;
 
             private uint _multipartMessageId;
             private uint _totalLength;
@@ -88,10 +88,10 @@ namespace BeatTogether.Core.Messaging.Implementations
                     return;
                 if (Interlocked.Add(ref _receivedLength, message.Length) >= _totalLength)
                 {
-                    var buffer = new GrowingSpanBuffer(stackalloc byte[(int)_totalLength]);
+                    var bufferWriter = new SpanBufferWriter(stackalloc byte[(int)_totalLength]);
                     foreach (var kvp in _messages.OrderBy(kvp => kvp.Key))
-                        buffer.WriteBytes(kvp.Value.Data);
-                    var bufferReader = new SpanBufferReader(buffer.Data);
+                        bufferWriter.WriteBytes(kvp.Value.Data);
+                    var bufferReader = new SpanBufferReader(bufferWriter.Data);
                     var fullMessage = _messageSource._messageReader.ReadFrom(ref bufferReader);
                     Complete(session, fullMessage);
                 }
@@ -103,7 +103,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             private readonly BaseMessageSource _messageSource;
 
             private TaskCompletionSource<IResponse> _taskCompletionSource;
-            private CancellationTokenSource _cancellationTokenSource;
+            private CancellationTokenSource? _cancellationTokenSource;
 
             public ResponseWaiter(
                 uint requestId,

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Runtime.Serialization;
 using BeatTogether.Core.Messaging.Abstractions;
-using BeatTogether.Core.Messaging.Extensions;
+using BeatTogether.Extensions;
 using Krypton.Buffers;
 
 namespace BeatTogether.Core.Messaging.Implementations

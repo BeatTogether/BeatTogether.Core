@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace BeatTogether.Core.Messaging.Abstractions
 {
@@ -32,7 +33,7 @@ namespace BeatTogether.Core.Messaging.Abstractions
         /// <returns>
         /// <see langword="true"/> when the <paramref name="type"/> was retrieved successfully;
         /// <see langword="false"/> otherwise.</returns>
-        bool TryGetMessageType(object id, out Type type);
+        bool TryGetMessageType(object id, [MaybeNullWhen(false)] out Type type);
 
         /// <summary>
         /// Retrieves the identifier associated with the message
@@ -96,6 +97,6 @@ namespace BeatTogether.Core.Messaging.Abstractions
         /// <see langword="true"/> when the <paramref name="message"/> was created successfully;
         /// <see langword="false"/> otherwise.
         /// </returns>
-        bool TryCreateMessage(object id, out IMessage message);
+        bool TryCreateMessage(object id, [MaybeNullWhen(false)] out IMessage message);
     }
 }

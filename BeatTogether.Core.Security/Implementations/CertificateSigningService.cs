@@ -21,9 +21,14 @@ namespace BeatTogether.Core.Security.Implementations
             var asymmetricCipherKeyPair = @object as AsymmetricCipherKeyPair;
             if (asymmetricCipherKeyPair != null)
                 @object = asymmetricCipherKeyPair.Private;
-            _privateKey = @object as RsaPrivateCrtKeyParameters;
-            if (_privateKey is null)
+            try
+            {
+                _privateKey = (RsaPrivateCrtKeyParameters)@object;
+            }
+            catch (InvalidCastException)
+            {
                 throw new Exception($"Invalid RSA private key (Path='{configuration.PrivateKeyPath}').");
+            }
         }
 
         public byte[] Sign(byte[] data)

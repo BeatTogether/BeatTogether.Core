@@ -46,11 +46,11 @@ namespace BeatTogether.Core.Messaging.Implementations
             var hmacStart = decryptedBuffer.Length - paddingByteCount - 10;
             var decryptedBufferSpan = decryptedBuffer.AsSpan();
             var hash = decryptedBufferSpan.Slice(hmacStart, 10);
-            var hashBuffer = new GrowingSpanBuffer(stackalloc byte[decryptedBuffer.Length + 4]);
-            hashBuffer.WriteBytes(decryptedBufferSpan.Slice(0, hmacStart));
-            hashBuffer.WriteUInt32(sequenceId);
+            var hashBufferWriter = new SpanBufferWriter(stackalloc byte[decryptedBuffer.Length + 4]);
+            hashBufferWriter.WriteBytes(decryptedBufferSpan.Slice(0, hmacStart));
+            hashBufferWriter.WriteUInt32(sequenceId);
             Span<byte> computedHash = stackalloc byte[32];
-            if (!hmac.TryComputeHash(hashBuffer.Data, computedHash, out _))
+            if (!hmac.TryComputeHash(hashBufferWriter.Data, computedHash, out _))
                 throw new Exception("Failed to compute message hash.");
             if (!hash.SequenceEqual(computedHash.Slice(0, 10)))
                 throw new Exception("Message hash does not match the computed hash.");

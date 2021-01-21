@@ -30,7 +30,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
         }
 
-        public event MessageDispatchHandler OnSent;
+        public event MessageDispatchHandler? OnSent;
 
         protected abstract byte PacketProperty { get; }
 
@@ -118,7 +118,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                     request.RequestId = request.RequestId = session.GetNextRequestId();
             }
 
-            var buffer = new GrowingSpanBuffer(stackalloc byte[412]);
+            var bufferWriter = new SpanBufferWriter(stackalloc byte[412]);
             if (message is IEncryptedMessage encryptedMessage)
             {
                 if (session.EncryptionParameters is null)
@@ -133,15 +133,15 @@ namespace BeatTogether.Core.Messaging.Implementations
                         return;
                     }
 
-                    buffer.WriteBool(false);  // IsEncrypted
-                    _messageWriter.WriteTo(ref buffer, message, PacketProperty);
+                    bufferWriter.WriteBool(false);  // IsEncrypted
+                    _messageWriter.WriteTo(ref bufferWriter, message, PacketProperty);
                 }
                 else
                 {
                     encryptedMessage.SequenceId = session.GetNextSequenceId();
-                    buffer.WriteBool(true);  // IsEncrypted
+                    bufferWriter.WriteBool(true);  // IsEncrypted
                     _encryptedMessageWriter.WriteTo(
-                        ref buffer, encryptedMessage,
+                        ref bufferWriter, encryptedMessage,
                         session.EncryptionParameters.SendKey,
                         session.EncryptionParameters.SendMac,
                         PacketProperty
@@ -150,10 +150,10 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
             else
             {
-                buffer.WriteBool(false);  // IsEncrypted
-                _messageWriter.WriteTo(ref buffer, message, PacketProperty);
+                bufferWriter.WriteBool(false);  // IsEncrypted
+                _messageWriter.WriteTo(ref bufferWriter, message, PacketProperty);
             }
-            OnSent?.Invoke(session, buffer.Data);
+            OnSent?.Invoke(session, bufferWriter.Data);
         }
 
         #endregion

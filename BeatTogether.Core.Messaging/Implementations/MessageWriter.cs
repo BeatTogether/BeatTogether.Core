@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using BeatTogether.Core.Messaging.Abstractions;
-using BeatTogether.Core.Messaging.Extensions;
+using BeatTogether.Extensions;
 using Krypton.Buffers;
 
 namespace BeatTogether.Core.Messaging.Implementations
@@ -21,7 +21,7 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         /// <inheritdoc cref="IMessageWriter.WriteTo"/>
-        public void WriteTo(ref GrowingSpanBuffer buffer, IMessage message, byte? packetProperty)
+        public void WriteTo(ref SpanBufferWriter bufferWriter, IMessage message, byte? packetProperty)
         {
             var messageGroup = 0U;
             var messageId = 0U;
@@ -41,20 +41,20 @@ namespace BeatTogether.Core.Messaging.Implementations
             }
 
             if (packetProperty.HasValue)
-                buffer.WriteUInt8(packetProperty.Value);
-            buffer.WriteUInt32(messageGroup);
-            buffer.WriteVarUInt(ProtocolVersion);
+                bufferWriter.WriteUInt8(packetProperty.Value);
+            bufferWriter.WriteUInt32(messageGroup);
+            bufferWriter.WriteVarUInt(ProtocolVersion);
 
-            var messageBuffer = new GrowingSpanBuffer(stackalloc byte[412]);
-            messageBuffer.WriteVarUInt(messageId);
+            var messageBufferWriter = new SpanBufferWriter(stackalloc byte[412]);
+            messageBufferWriter.WriteVarUInt(messageId);
             if (message is IRequest request)
-                messageBuffer.WriteUInt32(request.RequestId);
+                messageBufferWriter.WriteUInt32(request.RequestId);
             if (message is IResponse response)
-                messageBuffer.WriteUInt32(response.ResponseId);
-            message.WriteTo(ref messageBuffer);
-            buffer.WriteVarUInt((uint)messageBuffer.Size);
+                messageBufferWriter.WriteUInt32(response.ResponseId);
+            message.WriteTo(ref messageBufferWriter);
+            bufferWriter.WriteVarUInt((uint)messageBufferWriter.Size);
             // TODO: Remove byte array allocation
-            buffer.WriteBytes(messageBuffer.Data.ToArray());
+            bufferWriter.WriteBytes(messageBufferWriter.Data.ToArray());
         }
     }
 }

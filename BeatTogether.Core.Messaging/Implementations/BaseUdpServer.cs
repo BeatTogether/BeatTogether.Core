@@ -4,11 +4,12 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Messages;
+using NetCoreServer;
 using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    public abstract class BaseUdpServer : NetCoreServer.UdpServer
+    public abstract class BaseUdpServer : UdpServer
     {
         private readonly IMessageSource _messageSource;
         private readonly IMessageDispatcher _messageDispatcher;

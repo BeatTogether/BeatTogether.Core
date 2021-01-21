@@ -22,28 +22,28 @@ namespace BeatTogether.Core.Messaging.Implementations
         }
 
         /// <inheritdoc cref="IEncryptedMessageWriter.WriteTo"/>
-        public void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty)
+        public void WriteTo<T>(ref SpanBufferWriter bufferWriter, T message, byte[] key, HMAC hmac, byte? packetProperty)
             where T : class, IEncryptedMessage
         {
-            var unencryptedBuffer = new GrowingSpanBuffer(stackalloc byte[412]);
-            _messageWriter.WriteTo(ref unencryptedBuffer, message, packetProperty);
+            var unencryptedBufferWriter = new SpanBufferWriter(stackalloc byte[412]);
+            _messageWriter.WriteTo(ref unencryptedBufferWriter, message, packetProperty);
 
-            var hashBuffer = new GrowingSpanBuffer(stackalloc byte[unencryptedBuffer.Size + 4]);
-            hashBuffer.WriteBytes(unencryptedBuffer.Data);
-            hashBuffer.WriteUInt32(message.SequenceId);
+            var hashBufferWriter = new SpanBufferWriter(stackalloc byte[unencryptedBufferWriter.Size + 4]);
+            hashBufferWriter.WriteBytes(unencryptedBufferWriter.Data);
+            hashBufferWriter.WriteUInt32(message.SequenceId);
             Span<byte> hash = stackalloc byte[32];
-            if (!hmac.TryComputeHash(hashBuffer.Data, hash, out _))
+            if (!hmac.TryComputeHash(hashBufferWriter.Data, hash, out _))
                 throw new Exception("Failed to compute message hash.");
-            unencryptedBuffer.WriteBytes(hash.Slice(0, 10));
+            unencryptedBufferWriter.WriteBytes(hash.Slice(0, 10));
 
             var iv = new byte[16];
             _rngCryptoServiceProvider.GetBytes(iv);
 
-            var paddingByteCount = (byte)((16 - ((unencryptedBuffer.Size + 1) & 15)) & 15);
+            var paddingByteCount = (byte)((16 - ((unencryptedBufferWriter.Size + 1) & 15)) & 15);
             for (var i = 0; i < paddingByteCount + 1; i++)
-                unencryptedBuffer.WriteUInt8(paddingByteCount);
+                unencryptedBufferWriter.WriteUInt8(paddingByteCount);
 
-            var encryptedBuffer = unencryptedBuffer.Data.ToArray();
+            var encryptedBuffer = unencryptedBufferWriter.Data.ToArray();
             using (var cryptoTransform = _aesCryptoServiceProvider.CreateEncryptor(key, iv))
             {
                 var bytesWritten = 0;
@@ -59,9 +59,9 @@ namespace BeatTogether.Core.Messaging.Implementations
                 }
             }
 
-            buffer.WriteUInt32(message.SequenceId);
-            buffer.WriteBytes(iv);
-            buffer.WriteBytes(encryptedBuffer);
+            bufferWriter.WriteUInt32(message.SequenceId);
+            bufferWriter.WriteBytes(iv);
+            bufferWriter.WriteBytes(encryptedBuffer);
         }
     }
 }

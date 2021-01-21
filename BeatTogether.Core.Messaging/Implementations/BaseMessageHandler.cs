@@ -57,6 +57,7 @@ namespace BeatTogether.Core.Messaging.Implementations
     }
 
     public abstract class BaseMessageHandler<TService> : BaseMessageHandler
+        where TService : notnull
     {
         private readonly IServiceProvider _serviceProvider;
 

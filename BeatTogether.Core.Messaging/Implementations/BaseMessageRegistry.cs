@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Delegates;
 
@@ -28,7 +29,7 @@ namespace BeatTogether.Core.Messaging.Implementations.Registries
             => _typeByIdLookup[(uint)id];
 
         /// <inheritdoc cref="IMessageRegistry.TryGetMessageType"/>
-        public bool TryGetMessageType(object id, out Type type)
+        public bool TryGetMessageType(object id, [MaybeNullWhen(false)] out Type type)
             => _typeByIdLookup.TryGetValue((uint)id, out type);
 
         /// <inheritdoc cref="IMessageRegistry.GetMessageId"/>
@@ -54,7 +55,7 @@ namespace BeatTogether.Core.Messaging.Implementations.Registries
             => _factoryByIdLookup[(uint)id]();
 
         /// <inheritdoc cref="IMessageRegistry.TryCreateMessage"/>
-        public bool TryCreateMessage(object id, out IMessage message)
+        public bool TryCreateMessage(object id, [MaybeNullWhen(false)] out IMessage message)
         {
             if (_factoryByIdLookup.TryGetValue((uint)id, out var factory))
             {

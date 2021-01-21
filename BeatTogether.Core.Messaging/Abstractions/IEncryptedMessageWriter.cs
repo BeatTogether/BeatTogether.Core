@@ -10,12 +10,12 @@ namespace BeatTogether.Core.Messaging.Abstractions
         /// This will include message headers.
         /// </summary>
         /// <typeparam name="T">The type of message to serialize.</typeparam>
-        /// <param name="buffer">The buffer to write to.</param>
+        /// <param name="bufferWriter">The buffer to write to.</param>
         /// <param name="message">The message to serialize.</param>
         /// <param name="key">The encryption key.</param>
         /// <param name="hmac">HMAC hasher.</param>
         /// <param name="packetProperty">The LiteNetLib PacketProperty to write.</param>
-        void WriteTo<T>(ref GrowingSpanBuffer buffer, T message, byte[] key, HMAC hmac, byte? packetProperty = null)
+        void WriteTo<T>(ref SpanBufferWriter bufferWriter, T message, byte[] key, HMAC hmac, byte? packetProperty = null)
             where T : class, IEncryptedMessage;
     }
 }

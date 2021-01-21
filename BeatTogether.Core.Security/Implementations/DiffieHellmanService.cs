@@ -22,14 +22,13 @@ namespace BeatTogether.Core.Security.Implementations
         public ECKeyPair GetECKeyPair()
         {
             using var memoryStream = new MemoryStream();
-            return new ECKeyPair
-            {
-                PrivateKeyParameters = TlsEccUtilities.GenerateEphemeralClientKeyExchange(
+            return new(
+                TlsEccUtilities.GenerateEphemeralClientKeyExchange(
                     _secureRandom, _ecPointFormats,
                     _ecParameters, memoryStream
                 ),
-                PublicKey = memoryStream.ToArray()
-            };
+                memoryStream.ToArray()
+            );
         }
 
         public ECPublicKeyParameters DeserializeECPublicKey(byte[] publicKey)

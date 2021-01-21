@@ -3,29 +3,23 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <LangVersion>9</LangVersion>
+    <PackageIcon>icon.png</PackageIcon>
     <Authors>pythonology</Authors>
-    <Version>1.6.2</Version>
+    <Company>pythonology</Company>
     <RepositoryUrl>https://github.com/pythonology/BeatTogether.Core</RepositoryUrl>
+    <Version>1.7.0</Version>
+    <Nullable>enable</Nullable>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Krypton.Buffers" Version="1.1.0" />
-    <PackageReference Include="Obvs" Version="5.0.2.52" />
-    <PackageReference Include="Obvs.RabbitMQ" Version="5.0.2.15" />
+    <PackageReference Include="BeatTogether.Extensions.Configuration" Version="1.0.0" />
+    <PackageReference Include="Krypton.Buffers" Version="2.0.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BeatTogether.Core.Hosting\BeatTogether.Core.Hosting.csproj" />
-    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj">
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <IncludeAssets>NetCoreServer.dll</IncludeAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\dependencies\Obvs.Serialization\Obvs.Serialization.Json\Obvs.Serialization.Json.csproj">
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <IncludeAssets>Obvs.Serialization.Json.dll</IncludeAssets>
-    </ProjectReference>
+    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj" />
   </ItemGroup>
 
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">

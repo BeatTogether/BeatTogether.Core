@@ -8,15 +8,20 @@ namespace BeatTogether.Core.Messaging.Implementations
 {
     public abstract class BaseSession : ISession
     {
-        public EndPoint EndPoint { get; init; }
+        public EndPoint EndPoint { get; }
         public uint Epoch { get; set; }
-        public EncryptionParameters EncryptionParameters { get; set; }
+        public EncryptionParameters? EncryptionParameters { get; set; }
 
         private uint _lastSentSequenceId = 0;
         private uint _lastSentRequestId = 0;
         private object _handledRequestsLock = new object();
         private HashSet<uint> _handledRequests = new HashSet<uint>();
         private HashSet<uint> _cachedHandledRequests = new HashSet<uint>();
+
+        public BaseSession(EndPoint endPoint)
+        {
+            EndPoint = endPoint;
+        }
 
         public uint GetNextSequenceId()
             => unchecked(Interlocked.Increment(ref _lastSentSequenceId));

@@ -9,9 +9,9 @@ namespace BeatTogether.Core.Messaging.Messages
         public uint ResponseId { get; set; }
         public bool MessageHandled { get; set; }
 
-        public void WriteTo(ref GrowingSpanBuffer buffer)
+        public void WriteTo(ref SpanBufferWriter bufferWriter)
         {
-            buffer.WriteBool(MessageHandled);
+            bufferWriter.WriteBool(MessageHandled);
         }
 
         public void ReadFrom(ref SpanBufferReader bufferReader)
