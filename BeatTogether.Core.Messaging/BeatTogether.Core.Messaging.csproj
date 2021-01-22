@@ -7,7 +7,7 @@
     <Authors>pythonology</Authors>
     <Company>pythonology</Company>
     <RepositoryUrl>https://github.com/pythonology/BeatTogether.Core</RepositoryUrl>
-    <Version>1.7.0</Version>
+    <Version>1.7.1</Version>
     <Nullable>enable</Nullable>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
@@ -23,7 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj" />
+    <ProjectReference Include="..\dependencies\NetCoreServer\source\NetCoreServer\NetCoreServer.csproj">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <IncludeAssets>NetCoreServer.dll</IncludeAssets>
+    </ProjectReference>
   </ItemGroup>
 
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
