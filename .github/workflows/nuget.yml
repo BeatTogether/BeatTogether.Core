@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    branches: [ master ]
 
 jobs:
   nuget-1:
@@ -23,16 +21,11 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Pack
         run: |
-          dotnet pack -c Release --output nupkgs BeatTogether.Core.Data/BeatTogether.Core.Data.csproj
-          dotnet pack -c Release --output nupkgs BeatTogether.Core.Hosting/BeatTogether.Core.Hosting.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
       - name: Publish
         run: |
-          dotnet nuget push nupkgs/BeatTogether.Core.Data.*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Hosting.*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Messaging.*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Security.*.nupkg -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+          "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
   nuget-2:
     name: https://api.nuget.org/v3/index.json
@@ -50,13 +43,8 @@ jobs:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
       - name: Pack
         run: |
-          dotnet pack -c Release --output nupkgs BeatTogether.Core.Data/BeatTogether.Core.Data.csproj
-          dotnet pack -c Release --output nupkgs BeatTogether.Core.Hosting/BeatTogether.Core.Hosting.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
       - name: Publish
         run: |
-          dotnet nuget push nupkgs/BeatTogether.Core.Data.*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Hosting.*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Messaging.*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
-          dotnet nuget push nupkgs/BeatTogether.Core.Security.*.nupkg -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
+          dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
