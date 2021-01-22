@@ -25,7 +25,7 @@ jobs:
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
       - name: Publish
         run: |
-          "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+          dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
 
   nuget-2:
     name: https://api.nuget.org/v3/index.json
@@ -47,4 +47,4 @@ jobs:
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
       - name: Publish
         run: |
-          dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
+          dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
