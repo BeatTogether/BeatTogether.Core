@@ -1,6 +1,3 @@
 [submodule "dependencies/NetCoreServer"]
 	path = dependencies/NetCoreServer
 	url = https://github.com/chandler14362/NetCoreServer.git
-[submodule "dependencies/Obvs.Serialization"]
-	path = dependencies/Obvs.Serialization
-	url = https://github.com/pythonology/Obvs.Serialization.git
