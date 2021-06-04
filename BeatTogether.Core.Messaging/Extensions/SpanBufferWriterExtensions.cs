@@ -36,7 +36,7 @@ namespace BeatTogether.Extensions
 
         public static void WriteString(this ref SpanBufferWriter bufferWriter, string value)
         {
-            bufferWriter.WriteInt32(value.Length);
+            bufferWriter.WriteInt32(Encoding.UTF8.GetByteCount(value));
             bufferWriter.WriteBytes(Encoding.UTF8.GetBytes(value));
         }
 
