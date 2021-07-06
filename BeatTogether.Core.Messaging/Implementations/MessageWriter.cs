@@ -9,7 +9,7 @@ namespace BeatTogether.Core.Messaging.Implementations
 {
     public class MessageWriter : IMessageWriter
     {
-        protected virtual uint ProtocolVersion => 1;
+        protected virtual uint ProtocolVersion => 3;
 
         private readonly Dictionary<uint, IMessageRegistry> _messageRegistries;
 
@@ -51,7 +51,12 @@ namespace BeatTogether.Core.Messaging.Implementations
                 messageBufferWriter.WriteUInt32(request.RequestId);
             if (message is IResponse response)
                 messageBufferWriter.WriteUInt32(response.ResponseId);
-            message.WriteTo(ref messageBufferWriter);
+            
+            if (message is IVersionedMessage versionedMessage)
+                versionedMessage.WriteTo(ref messageBufferWriter, ProtocolVersion);
+            else
+                message.WriteTo(ref messageBufferWriter);
+            
             bufferWriter.WriteVarUInt((uint)messageBufferWriter.Size);
             // TODO: Remove byte array allocation
             bufferWriter.WriteBytes(messageBufferWriter.Data.ToArray());

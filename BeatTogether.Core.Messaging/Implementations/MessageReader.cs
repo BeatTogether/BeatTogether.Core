@@ -49,7 +49,12 @@ namespace BeatTogether.Core.Messaging.Implementations
                 request.RequestId = bufferReader.ReadUInt32();
             if (message is IResponse response)
                 response.ResponseId = bufferReader.ReadUInt32();
-            message.ReadFrom(ref bufferReader);
+            
+            if (message is IVersionedMessage versionedMessage)
+                versionedMessage.ReadFrom(ref bufferReader, protocolVersion);
+            else
+                message.ReadFrom(ref bufferReader);
+            
             return message;
         }
     }
