@@ -9,7 +9,7 @@ namespace BeatTogether.Core.Messaging.Implementations
 {
     public class MessageWriter : IMessageWriter
     {
-        protected virtual uint ProtocolVersion => 1;
+        protected virtual uint ProtocolVersion => 4;
 
         private readonly Dictionary<uint, IMessageRegistry> _messageRegistries;
 

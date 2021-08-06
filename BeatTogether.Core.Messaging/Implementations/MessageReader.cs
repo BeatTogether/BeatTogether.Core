@@ -9,8 +9,8 @@ namespace BeatTogether.Core.Messaging.Implementations
 {
     public class MessageReader : IMessageReader
     {
-        protected virtual uint MinimumProtocolVersion => 1;
-        protected virtual uint MaximumProtocolVersion => 3;
+        protected virtual uint MinimumProtocolVersion => 4;
+        protected virtual uint MaximumProtocolVersion => 4;
 
         private readonly Dictionary<uint, IMessageRegistry> _messageRegistries;
 
