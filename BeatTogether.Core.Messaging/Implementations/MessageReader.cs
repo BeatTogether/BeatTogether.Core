@@ -9,7 +9,7 @@ namespace BeatTogether.Core.Messaging.Implementations
 {
     public class MessageReader : IMessageReader
     {
-        protected virtual uint MinimumProtocolVersion => 4;
+        protected virtual uint MinimumProtocolVersion => 3;
         protected virtual uint MaximumProtocolVersion => 4;
 
         private readonly Dictionary<uint, IMessageRegistry> _messageRegistries;
@@ -37,7 +37,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             if (!_messageRegistries.TryGetValue(messageGroup, out var messageRegistry))
                 throw new InvalidDataContractException($"Invalid message group (MessageGroup={messageGroup}).");
             var protocolVersion = bufferReader.ReadVarUInt();
-            if (protocolVersion < MinimumProtocolVersion || protocolVersion > MaximumProtocolVersion)
+            if (protocolVersion != MaximumProtocolVersion)
                 throw new InvalidDataContractException($"Invalid message protocol version (ProtocolVersion={protocolVersion}).");
             var length = bufferReader.ReadVarUInt();
             if (bufferReader.RemainingSize < length)

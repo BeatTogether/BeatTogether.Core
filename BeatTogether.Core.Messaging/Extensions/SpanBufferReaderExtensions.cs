@@ -76,7 +76,8 @@ namespace BeatTogether.Extensions
             var length = bufferReader.ReadInt32();
             if (length <= 0 | length > maxLength)
                 return string.Empty;
-            return Encoding.UTF8.GetString(bufferReader.ReadBytes(length));
+            var bytes = bufferReader.ReadBytes(length);
+            return Encoding.UTF8.GetString(bytes);
         }
 
         public static IPEndPoint ReadIPEndPoint(this ref SpanBufferReader bufferReader)
