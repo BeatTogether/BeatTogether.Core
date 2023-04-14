@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - Net6.0
 
 jobs:
   nuget-1:
