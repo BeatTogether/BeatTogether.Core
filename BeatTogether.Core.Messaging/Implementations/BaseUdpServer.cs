@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
+using AsyncUdp;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Messages;
-using NetCoreServer;
 using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    public abstract class BaseUdpServer : UdpServer
+    public abstract class BaseUdpServer : AsyncUdpServer
     {
         private readonly IMessageSource _messageSource;
         private readonly IMessageDispatcher _messageDispatcher;
@@ -19,7 +20,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             IPEndPoint endPoint,
             IMessageSource messageSource,
             IMessageDispatcher messageDispatcher)
-            : base(endPoint)
+            : base(endPoint, true)
         {
             _messageSource = messageSource;
             _messageDispatcher = messageDispatcher;
@@ -27,12 +28,13 @@ namespace BeatTogether.Core.Messaging.Implementations
 
             _messageDispatcher.OnSent += (session, buffer) =>
             {
+                var data = buffer.ToArray();
                 _logger.Verbose(
                     "Handling OnSent " +
                     $"(EndPoint='{session.EndPoint}', " +
-                    $"Data='{BitConverter.ToString(buffer.ToArray())}')."
+                    $"Data='{BitConverter.ToString(data)}')."
                 );
-                SendAsync(session.EndPoint, buffer);
+                _ = SendAsync(session.EndPoint, data, CancellationToken.None);
             };
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
             {
@@ -59,9 +61,7 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         #region Protected Methods
 
-        protected override void OnStarted() => ReceiveAsync();
-
-        protected override void OnReceived(EndPoint endPoint, ReadOnlySpan<byte> buffer)
+        protected override void OnReceived(EndPoint endPoint, Memory<byte> buffer)
         {
             _logger.Verbose(
                 "Handling OnReceived " +
@@ -71,9 +71,8 @@ namespace BeatTogether.Core.Messaging.Implementations
             if (buffer.Length > 0)
             {
                 var session = GetSession(endPoint);
-                _messageSource.Signal(session, buffer);
+                _messageSource.Signal(session, buffer.Span);
             }
-            ReceiveAsync();
         }
 
         protected override void OnError(SocketError error) =>

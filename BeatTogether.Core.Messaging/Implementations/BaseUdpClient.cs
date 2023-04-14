@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
+using AsyncUdp;
 using BeatTogether.Core.Messaging.Abstractions;
 using BeatTogether.Core.Messaging.Messages;
 using Serilog;
 
 namespace BeatTogether.Core.Messaging.Implementations
 {
-    using UdpClient = NetCoreServer.UdpClient;
-
-    public abstract class BaseUdpClient : UdpClient
+    public abstract class BaseUdpClient : AsyncUdpServer
     {
         public ISession Session { get; }
 
@@ -22,7 +22,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             IPEndPoint endPoint,
             IMessageSource messageSource,
             IMessageDispatcher messageDispatcher)
-            : base(endPoint)
+            : base(endPoint, true)
         {
             Session = GetSession(endPoint);
 
@@ -39,7 +39,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                     $"(EndPoint='{session.EndPoint}', " +
                     $"Data='{BitConverter.ToString(data)}')."
                 );
-                SendAsync(session.EndPoint, data);
+                _ = SendAsync(session.EndPoint, data, CancellationToken.None);
             };
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
             {
@@ -66,18 +66,15 @@ namespace BeatTogether.Core.Messaging.Implementations
 
         #region Protected Methods
 
-        protected override void OnConnected() => ReceiveAsync();
-
-        protected override void OnReceived(EndPoint endPoint, ReadOnlySpan<byte> buffer)
+        protected override void OnReceived(EndPoint endpoint, Memory<byte> buffer)
         {
             _logger.Verbose(
                 "Handling OnReceived " +
-                $"(EndPoint='{endPoint}', " +
+                $"(EndPoint='{endpoint}', " +
                 $"Data='{BitConverter.ToString(buffer.ToArray())}')."
-            );
+);
             if (buffer.Length > 0)
-                _messageSource.Signal(Session, buffer);
-            ReceiveAsync();
+                _messageSource.Signal(Session, buffer.Span);
         }
 
         protected override void OnError(SocketError error) =>

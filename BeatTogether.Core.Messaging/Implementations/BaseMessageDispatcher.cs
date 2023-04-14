@@ -133,7 +133,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                         return;
                     }
 
-                    bufferWriter.WriteBool(false);  // IsEncrypted
+                    bufferWriter.WriteBool(false);  // NotEncrypted
                     _messageWriter.WriteTo(ref bufferWriter, message, PacketProperty);
                 }
                 else
