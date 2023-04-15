@@ -22,7 +22,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             IPEndPoint endPoint,
             IMessageSource messageSource,
             IMessageDispatcher messageDispatcher)
-            : base(endPoint, true)
+            : base(endPoint, false)
         {
             Session = GetSession(endPoint);
 

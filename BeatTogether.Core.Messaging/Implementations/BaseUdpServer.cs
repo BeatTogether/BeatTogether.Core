@@ -20,7 +20,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             IPEndPoint endPoint,
             IMessageSource messageSource,
             IMessageDispatcher messageDispatcher)
-            : base(endPoint, true)
+            : base(endPoint, false)
         {
             _messageSource = messageSource;
             _messageDispatcher = messageDispatcher;
