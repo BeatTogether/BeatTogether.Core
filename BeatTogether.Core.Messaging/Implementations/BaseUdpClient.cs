@@ -22,7 +22,7 @@ namespace BeatTogether.Core.Messaging.Implementations
             IPEndPoint endPoint,
             IMessageSource messageSource,
             IMessageDispatcher messageDispatcher)
-            : base(endPoint, false)
+            : base(endPoint, false, 1)
         {
             Session = GetSession(endPoint);
 
@@ -39,7 +39,7 @@ namespace BeatTogether.Core.Messaging.Implementations
                     $"(EndPoint='{session.EndPoint}', " +
                     $"Data='{BitConverter.ToString(data)}')."
                 );
-                _ = SendAsync(session.EndPoint, data, CancellationToken.None);
+                SendAsync(session.EndPoint, data);
             };
             _messageSource.Subscribe<AcknowledgeMessage>((session, message) =>
             {
@@ -76,9 +76,6 @@ namespace BeatTogether.Core.Messaging.Implementations
             if (buffer.Length > 0)
                 _messageSource.Signal(Session, buffer.Span);
         }
-
-        protected override void OnError(SocketError error) =>
-            _logger.Error($"Handling OnError (Error={error}).");
 
         #endregion
     }
