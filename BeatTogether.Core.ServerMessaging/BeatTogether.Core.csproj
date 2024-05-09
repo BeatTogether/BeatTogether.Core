@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Version>1.0.3</Version>
+    <Authors>BeatTogether</Authors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BinaryRecords" Version="0.4.1" />
+  </ItemGroup>
+
+</Project>

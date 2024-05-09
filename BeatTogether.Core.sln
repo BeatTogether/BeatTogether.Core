@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dependencies", "dependencie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncUdpServer", "dependencies\AsyncUdpServer\AsyncUdpServer\AsyncUdpServer.csproj", "{B41D53DD-7F1C-447F-9211-BC9A7A2C23E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatTogether.Core", "BeatTogether.Core.ServerMessaging\BeatTogether.Core.csproj", "{1D3C46DC-6AD8-4A97-A1A0-E1D8390BB23D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{B41D53DD-7F1C-447F-9211-BC9A7A2C23E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B41D53DD-7F1C-447F-9211-BC9A7A2C23E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B41D53DD-7F1C-447F-9211-BC9A7A2C23E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D3C46DC-6AD8-4A97-A1A0-E1D8390BB23D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D3C46DC-6AD8-4A97-A1A0-E1D8390BB23D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D3C46DC-6AD8-4A97-A1A0-E1D8390BB23D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D3C46DC-6AD8-4A97-A1A0-E1D8390BB23D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
