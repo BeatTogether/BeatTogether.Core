@@ -24,6 +24,7 @@ jobs:
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
+          dotnet pack -c Release --output nupkgs BeatTogether.Core.ServerMessaging/BeatTogether.Core.csproj
       - name: Publish
         run: |
           dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
@@ -46,6 +47,7 @@ jobs:
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
+          dotnet pack -c Release --output nupkgs BeatTogether.Core.ServerMessaging/BeatTogether.Core.csproj
       - name: Publish
         run: |
           dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
