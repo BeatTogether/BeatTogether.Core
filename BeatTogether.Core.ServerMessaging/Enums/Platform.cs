@@ -12,6 +12,7 @@
         PS5,
         PS5Dev,
         PS5Cert,
-        Oculus = 1
+        Oculus = 1,
+        Pico = 20,
     }
 }
