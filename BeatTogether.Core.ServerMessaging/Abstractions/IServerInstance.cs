@@ -29,7 +29,7 @@ namespace BeatTogether.Core.Abstractions
         public bool AllowChroma { get; set; }
         public bool AllowME { get; set; }
         public bool AllowNE { get; set; }
-        public VersionRange SuportedVersionRange { get; set; }
+        public VersionRange SupportedVersionRange { get; set; }
 	}
 
 }

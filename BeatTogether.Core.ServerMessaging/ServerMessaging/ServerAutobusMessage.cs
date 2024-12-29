@@ -33,7 +33,7 @@ namespace BeatTogether.Core.ServerMessaging.Models
             AllowME = instance.AllowME;
             AllowNE = instance.AllowNE;
 
-            SupportedVersionRange = instance.SuportedVersionRange;
+            SupportedVersionRange = instance.SupportedVersionRange;
 		}
 		public Server() { }
 
