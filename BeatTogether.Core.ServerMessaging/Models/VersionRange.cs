@@ -11,7 +11,7 @@ namespace BeatTogether.Core.Models
 		public string MinVersion { get; set; } = string.Empty;
 		public string MaxVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue).ToString();
 
-		public static VersionRange? FindVersionRange(List<VersionRange> versionRanges, string version)
+		public static VersionRange? FindVersionRange(List<VersionRange> versionRanges, Version version)
 		{
 			foreach (var range in versionRanges)
 				if (VersionRangeSatisfies(range, version))
@@ -19,12 +19,20 @@ namespace BeatTogether.Core.Models
 			return null;
 		}
 
-		public static bool VersionRangeSatisfies(VersionRange range, string version)
+		public static VersionRange? FindVersionRange(List<VersionRange> versionRanges, string version)
+		{
+			return FindVersionRange(versionRanges, version);
+		}
+		public static bool VersionRangeSatisfies(VersionRange range, Version version)
 		{
 			var minVersion = Version.Parse(range.MinVersion);
 			var maxVersion = Version.Parse(range.MaxVersion);
-			var parsedVersion = Version.Parse(version);
-			return parsedVersion >= minVersion && parsedVersion <= maxVersion;
+			return version >= minVersion && version <= maxVersion;
+		}
+
+		public static bool VersionRangeSatisfies(VersionRange range, string version)
+		{
+			return VersionRangeSatisfies(range, Version.Parse(version));
 		}
 	}
 }
