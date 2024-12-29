@@ -48,6 +48,9 @@ namespace BeatTogether.Core.Extensions
             bufferWriter.WriteBool(server.AllowChroma);
             bufferWriter.WriteBool(server.AllowME);
             bufferWriter.WriteBool(server.AllowNE);
-        }
-    }
+
+            bufferWriter.WriteUTF16String(server.SupportedVersionRange.MinVersion);
+            bufferWriter.WriteUTF16String(server.SupportedVersionRange.MaxVersion);
+		}
+	}
 }
