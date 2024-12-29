@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - Net6.0
 
 jobs:
   nuget-1:
@@ -15,7 +16,7 @@ jobs:
           submodules: 'recursive'
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 5.0.400
+          dotnet-version: 6.0.x
           source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
@@ -23,6 +24,7 @@ jobs:
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
+          dotnet pack -c Release --output nupkgs BeatTogether.Core.ServerMessaging/BeatTogether.Core.csproj
       - name: Publish
         run: |
           dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.GITHUB_TOKEN}} --skip-duplicate
@@ -37,7 +39,7 @@ jobs:
           submodules: 'recursive'
       - uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 5.0.400
+          dotnet-version: 6.0.x
           source-url: https://api.nuget.org/v3/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.NUGET_API_KEY}}
@@ -45,6 +47,7 @@ jobs:
         run: |
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Messaging/BeatTogether.Core.Messaging.csproj
           dotnet pack -c Release --output nupkgs BeatTogether.Core.Security/BeatTogether.Core.Security.csproj
+          dotnet pack -c Release --output nupkgs BeatTogether.Core.ServerMessaging/BeatTogether.Core.csproj
       - name: Publish
         run: |
           dotnet nuget push "nupkgs/BeatTogether.Core.*.nupkg" -k ${{secrets.NUGET_API_KEY}} --skip-duplicate
