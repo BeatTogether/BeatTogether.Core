@@ -1,4 +1,5 @@
 ﻿using BeatTogether.Core.Enums;
+using BeatTogether.Core.Models;
 
 namespace BeatTogether.Core.Abstractions
 {
@@ -24,6 +25,7 @@ namespace BeatTogether.Core.Abstractions
             GameplayServerControlSettings serverControlSettings,
             BeatmapDifficultyMask difficultyMask,
             GameplayModifiersMask modifiersMask,
-            string songPackMasks);
+            string songPackMasks,
+            VersionRange versionRange);
     }
 }

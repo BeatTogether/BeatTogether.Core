@@ -8,7 +8,7 @@ namespace BeatTogether.Core.Models
 {
 	public class VersionRange
 	{
-		public string MinVersion { get; set; } = string.Empty;
+		public string MinVersion { get; set; } = "0.0.0";
 		public string MaxVersion { get; set; } = new Version(int.MaxValue, int.MaxValue, int.MaxValue, int.MaxValue).ToString();
 
 		public static VersionRange? FindVersionRange(List<VersionRange> versionRanges, Version version)
@@ -33,6 +33,22 @@ namespace BeatTogether.Core.Models
 		public static bool VersionRangeSatisfies(VersionRange range, string version)
 		{
 			return VersionRangeSatisfies(range, Version.Parse(version));
+		}
+
+		public static VersionStatus CheckVersionRange(VersionRange range, Version version)
+		{
+			var minVersion = Version.Parse(range.MinVersion);
+			var maxVersion = Version.Parse(range.MaxVersion);
+			if (version < minVersion) return VersionStatus.TooLow;
+			if (version > maxVersion) return VersionStatus.TooHigh;
+			return VersionStatus.Ok;
+		}
+
+		public enum VersionStatus
+		{
+			Ok,
+			TooHigh,
+			TooLow
 		}
 	}
 }
