@@ -32,8 +32,10 @@ namespace BeatTogether.Core.ServerMessaging.Models
             AllowChroma = instance.AllowChroma;
             AllowME = instance.AllowME;
             AllowNE = instance.AllowNE;
-        }
-        public Server() { }
+
+            SupportedVersionRange = instance.SupportedVersionRange;
+		}
+		public Server() { }
 
         public string ServerName { get; set; } = string.Empty;
         public string Secret { get; set; } = string.Empty;
@@ -58,5 +60,6 @@ namespace BeatTogether.Core.ServerMessaging.Models
         public bool AllowChroma { get; set; }
         public bool AllowME { get ; set ; }
         public bool AllowNE { get; set; }
-    }
+        public VersionRange SupportedVersionRange { get; set; } = new();
+	}
 }

@@ -50,6 +50,9 @@ namespace BeatTogether.Core.Extensions
             server.AllowME = bufferReader.ReadBool();
             server.AllowNE = bufferReader.ReadBool();
 
+            server.SupportedVersionRange.MinVersion = bufferReader.ReadUTF16String();
+            server.SupportedVersionRange.MaxVersion = bufferReader.ReadUTF16String();
+
             return server;
         }
     }
